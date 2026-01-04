@@ -21,7 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   app.enableCors();
 
-  const port = configService.get<number>('PORT') || 3002;
+  const port = configService.get<number>('PORT') || 3003;
   await app.listen(port);
 
   logger.log(`🚀 BFF Service is running on: http://localhost:${port}`);
