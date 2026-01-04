@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { StaffsClientService } from './staffs-client.service';
 import { AttendanceClientService } from './attendance-client.service';
+import { AuthClientService } from './auth-client.service';
 
 @Module({
     imports: [
@@ -10,7 +11,8 @@ import { AttendanceClientService } from './attendance-client.service';
             maxRedirects: 5,
         }),
     ],
-    providers: [StaffsClientService, AttendanceClientService],
-    exports: [StaffsClientService, AttendanceClientService],
+    providers: [StaffsClientService, AttendanceClientService, AuthClientService],
+    exports: [StaffsClientService, AttendanceClientService, AuthClientService],
 })
 export class ClientsModule { }
+

@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
+import { AxiosError } from 'axios';
 
 export interface Staff {
     id: string;
@@ -36,6 +37,17 @@ export interface StaffQueryParams {
     filterBy?: Record<string, unknown>;
 }
 
+export interface CreateStaffRequest {
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone?: string;
+    department?: string;
+    position?: string;
+    hireDate?: string;
+    isActive?: boolean;
+}
+
 @Injectable()
 export class StaffsClientService {
     private readonly logger = new Logger(StaffsClientService.name);
@@ -45,7 +57,7 @@ export class StaffsClientService {
         private readonly httpService: HttpService,
         private readonly configService: ConfigService,
     ) {
-        this.baseUrl = this.configService.get<string>('STAFFS_SERVICE_URL') || 'http://localhost:3000';
+        this.baseUrl = this.configService.get<string>('STAFFS_SERVICE_URL') || 'http://localhost:3002';
     }
 
     async findAll(params: StaffQueryParams, authToken: string): Promise<StaffResponse> {
@@ -71,4 +83,42 @@ export class StaffsClientService {
 
         return response.data;
     }
+
+    async createStaff(data: CreateStaffRequest, authToken: string): Promise<Staff> {
+        const url = `${this.baseUrl}/api/v1/staff`;
+        this.logger.debug(`Creating staff: ${data.email}`);
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post<Staff>(url, data, {
+                    headers: { Authorization: `Bearer ${authToken}` },
+                }),
+            );
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError && error.response) {
+                throw new HttpException(
+                    error.response.data?.message || 'Staff service error',
+                    error.response.status,
+                );
+            }
+            throw error;
+        }
+    }
+
+    async deleteStaff(staffId: string, authToken: string): Promise<void> {
+        const url = `${this.baseUrl}/api/v1/staff/${staffId}`;
+        this.logger.debug(`Deleting staff: ${staffId}`);
+
+        try {
+            await firstValueFrom(
+                this.httpService.delete(url, {
+                    headers: { Authorization: `Bearer ${authToken}` },
+                }),
+            );
+        } catch (error) {
+            this.logger.warn(`Failed to delete staff ${staffId}: ${error}`);
+        }
+    }
 }
+
