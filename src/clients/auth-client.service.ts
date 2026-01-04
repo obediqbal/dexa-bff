@@ -40,7 +40,9 @@ export class AuthClientService {
         try {
             const response = await firstValueFrom(
                 this.httpService.post<AuthResponse>(url, data, {
-                    headers: { Authorization: `Bearer ${authToken}` },
+                    headers: {
+                        Cookie: `access_token=${authToken}`,
+                    },
                 }),
             );
             return response.data;

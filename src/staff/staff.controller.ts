@@ -22,10 +22,6 @@ export class StaffController {
     }
 
     private extractToken(req: Request): string {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return '';
-        }
-        return authHeader.substring(7);
+        return req.cookies['access_token'] || '';
     }
 }

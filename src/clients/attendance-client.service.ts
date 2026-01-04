@@ -71,7 +71,9 @@ export class AttendanceClientService {
 
         const response = await firstValueFrom(
             this.httpService.get<AttendanceResponse>(url, {
-                headers: { Authorization: `Bearer ${authToken}` },
+                headers: {
+                    Cookie: `access_token=${authToken}`,
+                },
             }),
         );
 

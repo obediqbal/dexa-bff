@@ -77,7 +77,9 @@ export class StaffsClientService {
 
         const response = await firstValueFrom(
             this.httpService.get<StaffResponse>(url, {
-                headers: { Authorization: `Bearer ${authToken}` },
+                headers: {
+                    Cookie: `access_token=${authToken}`,
+                },
             }),
         );
 
@@ -91,7 +93,9 @@ export class StaffsClientService {
         try {
             const response = await firstValueFrom(
                 this.httpService.post<Staff>(url, data, {
-                    headers: { Authorization: `Bearer ${authToken}` },
+                    headers: {
+                        Cookie: `access_token=${authToken}`,
+                    },
                 }),
             );
             return response.data;
@@ -113,7 +117,9 @@ export class StaffsClientService {
         try {
             await firstValueFrom(
                 this.httpService.delete(url, {
-                    headers: { Authorization: `Bearer ${authToken}` },
+                    headers: {
+                        Cookie: `access_token=${authToken}`,
+                    },
                 }),
             );
         } catch (error) {
