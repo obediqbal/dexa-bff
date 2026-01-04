@@ -48,12 +48,13 @@ export class StaffService {
                     lastName: staff.lastName,
                 },
                 auth: {
-                    userId: auth.user.id,
-                    accessToken: auth.accessToken,
+                    userId: auth.id,
                 },
             };
         } catch (error) {
             this.logger.error(`Auth creation failed, rolling back staff: ${staff.id}`);
+            this.logger.error(error);
+
             await this.staffsClient.deleteStaff(staff.id, authToken);
 
             if (error instanceof HttpException) {

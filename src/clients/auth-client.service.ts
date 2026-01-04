@@ -12,13 +12,10 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse {
-    user: {
-        id: string;
-        staffId: string;
-        email: string;
-        role: string;
-    };
-    accessToken: string;
+    id: string;
+    staffId: string;
+    email: string;
+    role: string;
 }
 
 @Injectable()
